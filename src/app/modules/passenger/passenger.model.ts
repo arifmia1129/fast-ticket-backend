@@ -19,9 +19,9 @@ export const PassengerSchema = new Schema<
       unique: true,
       validate: {
         validator: function (value: string): boolean {
-          return value.length === 9;
+          return value.length === 7;
         },
-        message: "ID must be 9 character",
+        message: "ID must be 7 character",
       },
     },
     name: {

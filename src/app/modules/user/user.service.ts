@@ -15,8 +15,9 @@ import { IPassenger } from "../passenger/passenger.interface";
 import Passenger from "../passenger/passenger.model";
 import { IBusOwner } from "../busOwner/busOwner.interface";
 import BusOwner from "../busOwner/busOwner.model";
+import Permission from "../permission/permission.model";
 
-export const createPassengerService = async (
+const createPassengerService = async (
   passengerInfo: IPassenger,
   user: IUser,
 ): Promise<IUser | null> => {
@@ -94,7 +95,7 @@ export const createPassengerService = async (
   return userInfo || null;
 };
 
-export const createBusOwnerService = async (
+const createBusOwnerService = async (
   busOwnerInfo: IBusOwner,
   user: IUser,
 ): Promise<IUser | null> => {
@@ -172,10 +173,20 @@ export const createBusOwnerService = async (
   return userInfo || null;
 };
 
-export const createAdminService = async (
+const createAdminService = async (
   adminInfo: IAdmin,
   user: IUser,
 ): Promise<IUser | null> => {
+  const { permissions } = adminInfo;
+
+  for (const permission of permissions) {
+    const isExits = await Permission.findById(permission);
+
+    if (!isExits) {
+      throw new ApiError("Provided invalid permission", httpStatus.BAD_REQUEST);
+    }
+  }
+
   // if user don't give password use default password
   if (!user.password) {
     user.password = config.default_user_pass as string;
@@ -248,4 +259,10 @@ export const createAdminService = async (
     userInfo = await User.findOne({ id: userInfo.id }).populate("admin");
   }
   return userInfo || null;
+};
+
+export const UserService = {
+  createAdminService,
+  createBusOwnerService,
+  createPassengerService,
 };

@@ -19,6 +19,7 @@ const updateValidation = z.object({
     presentAddress: z.string().optional(),
     permanentAddress: z.string().optional(),
     bloodGroup: z.enum([...bloodGroupEnum] as [string, ...string[]]).optional(),
+    profileImage: z.string().optional(),
   }),
 });
 

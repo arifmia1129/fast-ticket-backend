@@ -6,7 +6,7 @@ export type IAdmin = {
   id: string;
   permissions: Types.ObjectId[] | IPermission[];
   name: IName;
-  designnation: string;
+  designation: string;
   gender: "male" | "female" | "other";
   dateOfBirth: string;
   email: string;
