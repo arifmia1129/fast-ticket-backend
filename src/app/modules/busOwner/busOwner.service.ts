@@ -131,7 +131,7 @@ const deleteBusOwnerByIdService = async (
 
   try {
     session.startTransaction();
-    const busOwnerInfo = await BusOwner.findOneAndDelete({ id });
+    const busOwnerInfo = await BusOwner.findOneAndDelete({ _id: id });
 
     if (!busOwnerInfo) {
       throw new ApiError("Failed to delete bus owner", httpStatus.BAD_REQUEST);
@@ -139,7 +139,7 @@ const deleteBusOwnerByIdService = async (
 
     res = busOwnerInfo;
 
-    const user = await User.deleteOne({ id });
+    const user = await User.deleteOne({ busOwner: id });
 
     if (!user) {
       throw new ApiError("Failed to delete user", httpStatus.BAD_REQUEST);

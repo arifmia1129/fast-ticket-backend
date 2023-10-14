@@ -4,7 +4,7 @@ import { IPermission } from "../permission/permission.interface";
 
 export type IAdmin = {
   id: string;
-  permissions: Types.ObjectId[] | IPermission[];
+  permissions?: Types.ObjectId[] | IPermission[];
   name: IName;
   designation: string;
   gender: "male" | "female" | "other";

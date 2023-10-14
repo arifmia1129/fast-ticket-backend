@@ -44,6 +44,7 @@ export const BusOwnerSchema = new Schema<
     tradeLicenseNo: {
       type: String,
       required: true,
+      unique: true,
     },
     gender: {
       type: String,

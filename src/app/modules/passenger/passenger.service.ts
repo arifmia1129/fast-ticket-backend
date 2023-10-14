@@ -131,7 +131,7 @@ const deletePassengerByIdService = async (
 
   try {
     session.startTransaction();
-    const passengerInfo = await Passenger.findOneAndDelete({ id });
+    const passengerInfo = await Passenger.findOneAndDelete({ _id: id });
 
     if (!passengerInfo) {
       throw new ApiError("Failed to delete passenger", httpStatus.BAD_REQUEST);
@@ -139,7 +139,7 @@ const deletePassengerByIdService = async (
 
     res = passengerInfo;
 
-    const user = await User.deleteOne({ id });
+    const user = await User.deleteOne({ passenger: id });
 
     if (!user) {
       throw new ApiError("Failed to delete user", httpStatus.BAD_REQUEST);

@@ -178,12 +178,16 @@ const createAdminService = async (
   user: IUser,
 ): Promise<IUser | null> => {
   const { permissions } = adminInfo;
+  if (Array.isArray(permissions) && permissions.length) {
+    for (const permission of permissions) {
+      const isExits = await Permission.findById(permission);
 
-  for (const permission of permissions) {
-    const isExits = await Permission.findById(permission);
-
-    if (!isExits) {
-      throw new ApiError("Provided invalid permission", httpStatus.BAD_REQUEST);
+      if (!isExits) {
+        throw new ApiError(
+          "Provided invalid permission",
+          httpStatus.BAD_REQUEST,
+        );
+      }
     }
   }
 

@@ -121,7 +121,7 @@ const deleteAdminByIdService = async (id: string): Promise<IAdmin | null> => {
 
   try {
     session.startTransaction();
-    const adminInfo = await Admin.findOneAndDelete({ id });
+    const adminInfo = await Admin.findOneAndDelete({ _id: id });
 
     if (!adminInfo) {
       throw new ApiError("Failed to delete admin", httpStatus.BAD_REQUEST);
@@ -129,7 +129,7 @@ const deleteAdminByIdService = async (id: string): Promise<IAdmin | null> => {
 
     res = adminInfo;
 
-    const user = await User.deleteOne({ id });
+    const user = await User.deleteOne({ admin: id });
 
     if (!user) {
       throw new ApiError("Failed to delete user", httpStatus.BAD_REQUEST);

@@ -58,7 +58,7 @@ const createAdmin = z.object({
         lastName: z.string(),
       }),
       designation: z.string(),
-      permissions: z.array(z.string()),
+      permissions: z.array(z.string()).optional(),
       gender: z.enum(["male", "female", "other"]),
       dateOfBirth: z.string(),
       email: z.string().email(),
