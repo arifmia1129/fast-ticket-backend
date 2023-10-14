@@ -12,9 +12,9 @@ import httpStatus from "../../../shared/httpStatus";
 import ApiError from "../../../errors/ApiError";
 
 const createPermissionService = async (
-  department: IPermission,
+  palyload: IPermission,
 ): Promise<IPermission | null> => {
-  return await Permission.create(department);
+  return await Permission.create(palyload);
 };
 
 const getPermissionService = async (
