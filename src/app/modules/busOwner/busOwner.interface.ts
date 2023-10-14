@@ -1,9 +1,12 @@
 import { HydratedDocument, Model } from "mongoose";
 import { IName } from "../../../interfaces/common.interface";
 
-export type IPassenger = {
+export type IBusOwner = {
   id: string;
   name: IName;
+  companyName: string;
+  designation: string;
+  tradeLicenseNo: string;
   gender: "male" | "female" | "other";
   dateOfBirth: string;
   email: string;
@@ -11,17 +14,14 @@ export type IPassenger = {
   emergencyContactNo: string;
   presentAddress: string;
   permanentAddress: string;
-  bloodGroup?: "a+" | "a-" | "b+" | "b-" | "ab+" | "ab-" | "o+" | "o-";
   profileImage?: string;
 };
 
-export type IPassengerMethods = {
+export type IBusOwnerMethods = {
   fullName(): string;
 };
 
-export type PassengerModel = {
-  createWithFullName(): Promise<
-    HydratedDocument<IPassenger, IPassengerMethods>
-  >;
+export type BusOwnerModel = {
+  createWithFullName(): Promise<HydratedDocument<IBusOwner, IBusOwnerMethods>>;
   // name: string,
-} & Model<IPassenger, object, IPassengerMethods>;
+} & Model<IBusOwner, object, IBusOwnerMethods>;

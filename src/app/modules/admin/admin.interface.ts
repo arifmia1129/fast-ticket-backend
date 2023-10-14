@@ -1,7 +1,7 @@
 import { HydratedDocument, Model } from "mongoose";
 import { IName } from "../../../interfaces/common.interface";
 
-export type IPassenger = {
+export type IAdmin = {
   id: string;
   name: IName;
   gender: "male" | "female" | "other";
@@ -11,17 +11,14 @@ export type IPassenger = {
   emergencyContactNo: string;
   presentAddress: string;
   permanentAddress: string;
-  bloodGroup?: "a+" | "a-" | "b+" | "b-" | "ab+" | "ab-" | "o+" | "o-";
   profileImage?: string;
 };
 
-export type IPassengerMethods = {
+export type IAdminMethods = {
   fullName(): string;
 };
 
-export type PassengerModel = {
-  createWithFullName(): Promise<
-    HydratedDocument<IPassenger, IPassengerMethods>
-  >;
+export type AdminModel = {
+  createWithFullName(): Promise<HydratedDocument<IAdmin, IAdminMethods>>;
   // name: string,
-} & Model<IPassenger, object, IPassengerMethods>;
+} & Model<IAdmin, object, IAdminMethods>;

@@ -6,18 +6,18 @@ import {
   Pagination,
   ResponseWithPagination,
 } from "../../../interfaces/databaseQuery.interface";
-import { IPassenger } from "./passenger.interface";
-import Passenger from "./passenger.model";
-import { passengerSearchableField } from "./passenger.constant";
+import { IBusOwner } from "./busOwner.interface";
+import BusOwner from "./busOwner.model";
+import { busOwnerSearchableField } from "./busOwner.constant";
 import ApiError from "../../../errors/ApiError";
 import httpStatus from "../../../shared/httpStatus";
 import User from "../user/user.model";
 import { IName } from "../../../interfaces/common.interface";
 
-const getPassengerService = async (
+const getBusOwnerService = async (
   filters: Filter,
   paginationOptions: Pagination,
-): Promise<ResponseWithPagination<IPassenger[]>> => {
+): Promise<ResponseWithPagination<IBusOwner[]>> => {
   const { page, limit, skip, sortBy, sortOrder } =
     paginationHelper.calculatePagination(paginationOptions);
 
@@ -33,7 +33,7 @@ const getPassengerService = async (
 
   if (searchTerm) {
     andCondition.push({
-      $or: passengerSearchableField.map(field => ({
+      $or: busOwnerSearchableField.map(field => ({
         [field]: {
           $regex: searchTerm,
           $options: "i",
@@ -52,16 +52,16 @@ const getPassengerService = async (
 
   const whereConditions = andCondition.length ? { $and: andCondition } : {};
 
-  const res = await Passenger.find(whereConditions)
+  const res = await BusOwner.find(whereConditions)
     .sort(sortCondition)
     .skip(skip)
     .limit(limit);
 
   if (!res.length) {
-    throw new ApiError("No passenger found", httpStatus.NOT_FOUND);
+    throw new ApiError("No bus owner found", httpStatus.NOT_FOUND);
   }
 
-  const total = await Passenger.countDocuments(whereConditions);
+  const total = await BusOwner.countDocuments(whereConditions);
 
   return {
     meta: {
@@ -73,14 +73,14 @@ const getPassengerService = async (
   };
 };
 
-const getPassengerByIdService = async (
+const getBusOwnerByIdService = async (
   id: string,
-): Promise<IPassenger | null> => {
-  const res = await Passenger.findById(id);
+): Promise<IBusOwner | null> => {
+  const res = await BusOwner.findById(id);
 
   if (!res) {
     throw new ApiError(
-      "No passenger found with given ID",
+      "No bus owner found with given ID",
       httpStatus.NOT_FOUND,
     );
   }
@@ -88,22 +88,22 @@ const getPassengerByIdService = async (
   return res;
 };
 
-const updatePassengerByIdService = async (
+const updateBusOwnerByIdService = async (
   id: string,
-  payload: Partial<IPassenger>,
-): Promise<IPassenger | null> => {
-  const isExist = await Passenger.findById(id);
+  payload: Partial<IBusOwner>,
+): Promise<IBusOwner | null> => {
+  const isExist = await BusOwner.findById(id);
 
   if (!isExist) {
     throw new ApiError(
-      "Passenger not found with given id",
+      "Bus owner not found with given id",
       httpStatus.NOT_FOUND,
     );
   }
 
-  const { name, ...PassengerInfo } = payload;
+  const { name, ...BusOwnerInfo } = payload;
 
-  const updateInfo: Partial<IPassenger> = { ...PassengerInfo };
+  const updateInfo: Partial<IBusOwner> = { ...BusOwnerInfo };
 
   //   name object
   if (name && Object.keys(name).length > 0) {
@@ -115,29 +115,29 @@ const updatePassengerByIdService = async (
     });
   }
 
-  const res = await Passenger.findOneAndUpdate({ _id: id }, updateInfo, {
+  const res = await BusOwner.findOneAndUpdate({ _id: id }, updateInfo, {
     new: true,
   });
 
   return res;
 };
 
-const deletePassengerByIdService = async (
+const deleteBusOwnerByIdService = async (
   id: string,
-): Promise<IPassenger | null> => {
+): Promise<IBusOwner | null> => {
   const session = await mongoose.startSession();
 
   let res;
 
   try {
     session.startTransaction();
-    const passenger = await Passenger.findOneAndDelete({ id });
+    const busOwnerInfo = await BusOwner.findOneAndDelete({ id });
 
-    if (!passenger) {
-      throw new ApiError("Failed to delete passenger", httpStatus.BAD_REQUEST);
+    if (!busOwnerInfo) {
+      throw new ApiError("Failed to delete bus owner", httpStatus.BAD_REQUEST);
     }
 
-    res = passenger;
+    res = busOwnerInfo;
 
     const user = await User.deleteOne({ id });
 
@@ -156,9 +156,9 @@ const deletePassengerByIdService = async (
   return res;
 };
 
-export const PassengerService = {
-  getPassengerService,
-  getPassengerByIdService,
-  updatePassengerByIdService,
-  deletePassengerByIdService,
+export const BusOwnerService = {
+  getBusOwnerService,
+  getBusOwnerByIdService,
+  updateBusOwnerByIdService,
+  deleteBusOwnerByIdService,
 };
