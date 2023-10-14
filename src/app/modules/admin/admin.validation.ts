@@ -11,7 +11,7 @@ const updateValidation = z.object({
       .optional(),
     companyName: z.string().optional(),
     designation: z.string().optional(),
-    tradeLicenseNo: z.string().optional(),
+    permissions: z.array(z.string()).optional(),
     gender: z.enum(["male", "female", "other"]).optional(),
     dateOfBirth: z.string().optional(),
     email: z.string().email().optional(),
@@ -23,6 +23,6 @@ const updateValidation = z.object({
   }),
 });
 
-export const BusOwnerValidation = {
+export const AdminValidation = {
   updateValidation,
 };

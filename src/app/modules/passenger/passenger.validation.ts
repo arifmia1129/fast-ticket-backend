@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { bloodGroupEnum, genderEnum } from "./passenger.constant";
+import { bloodGroupEnum } from "./passenger.constant";
+import { genderEnum } from "../../constant/common";
 
 const updateValidation = z.object({
   body: z.object({

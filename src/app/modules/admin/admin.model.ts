@@ -1,16 +1,8 @@
 import { Schema, model } from "mongoose";
-import {
-  IBusOwner,
-  IBusOwnerMethods,
-  BusOwnerModel,
-} from "./busOwner.interface";
+import { IAdmin, IAdminMethods, AdminModel } from "./admin.interface";
 import { genderEnum } from "../../constant/common";
 
-export const BusOwnerSchema = new Schema<
-  IBusOwner,
-  BusOwnerModel,
-  IBusOwnerMethods
->(
+export const AdminSchema = new Schema<IAdmin, AdminModel, IAdminMethods>(
   {
     id: {
       type: String,
@@ -33,18 +25,16 @@ export const BusOwnerSchema = new Schema<
         type: String,
       },
     },
-    companyName: {
+    designnation: {
       type: String,
       required: true,
     },
-    designation: {
-      type: String,
-      required: true,
-    },
-    tradeLicenseNo: {
-      type: String,
-      required: true,
-    },
+    permissions: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Permission",
+      },
+    ],
     gender: {
       type: String,
       required: true,
@@ -88,6 +78,7 @@ export const BusOwnerSchema = new Schema<
       type: String,
       required: true,
     },
+
     profileImage: {
       type: String,
       default: "",
@@ -98,6 +89,6 @@ export const BusOwnerSchema = new Schema<
   },
 );
 
-const BusOwner = model<IBusOwner, BusOwnerModel>("BusOwner", BusOwnerSchema);
+const Admin = model<IAdmin, AdminModel>("Admin", AdminSchema);
 
-export default BusOwner;
+export default Admin;

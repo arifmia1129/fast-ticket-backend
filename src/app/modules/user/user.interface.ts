@@ -1,16 +1,18 @@
 /* eslint-disable no-unused-vars */
 import { HydratedDocument, Model, Types } from "mongoose";
-import { USER_ROLE_ENUM } from "../../../enums/user.enum";
+import { IPassenger } from "../passenger/passenger.interface";
+import { IBusOwner } from "../busOwner/busOwner.interface";
+import { IAdmin } from "../admin/admin.interface";
 
 export type IUser = {
   id: string;
-  role: USER_ROLE_ENUM;
+  role: "passenger" | "bus_owner" | "admin";
   password: string;
   changePasswordAt: Date;
   needChangePassword: boolean;
-  passenger: Types.ObjectId;
-  busOwner: Types.ObjectId;
-  admin: Types.ObjectId;
+  passenger: Types.ObjectId | IPassenger;
+  busOwner: Types.ObjectId | IBusOwner;
+  admin: Types.ObjectId | IAdmin;
 };
 
 export type IUserMethods = {

@@ -2,7 +2,6 @@ import { Schema, model } from "mongoose";
 import { IUser, IUserMethods, UserModel } from "./user.interface";
 import bcrypt from "bcryptjs";
 import config from "../../../config";
-import { USER_ROLE_ENUM } from "../../../enums/user.enum";
 
 const userSchema = new Schema<IUser, UserModel, IUserMethods>(
   {
@@ -14,7 +13,7 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>(
     role: {
       type: String,
       required: true,
-      enum: USER_ROLE_ENUM,
+      enum: ["passenger", "bus_owner", "admin"],
     },
     password: {
       type: String,

@@ -10,12 +10,13 @@ import { IPermission } from "./permission.interface";
 import { permissionFilterableField } from "./permission.constant";
 import { paginationField } from "../../constant/pagination";
 import { PermissionService } from "./permission.service";
+import httpStatus from "../../../shared/httpStatus";
 
 const createPermission = catchAsync(async (req: Request, res: Response) => {
   const result = await PermissionService.createPermissionService(req.body);
 
   sendResponse<IPermission>(res, {
-    statusCode: 201,
+    statusCode: httpStatus.CREATED,
     success: true,
     message: "Successfully created permission",
     data: result,
@@ -32,7 +33,7 @@ const getPermission = catchAsync(async (req: Request, res: Response) => {
   );
 
   sendResponse<IPermission[]>(res, {
-    statusCode: 200,
+    statusCode: httpStatus.OK,
     success: true,
     message: "Successfully retrived all permissions",
     meta: result.meta,
@@ -44,7 +45,7 @@ const getPermissionById = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
   const result = await PermissionService.getPermissionByIdService(id);
   sendResponse<IPermission>(res, {
-    statusCode: 200,
+    statusCode: httpStatus.OK,
     success: true,
     message: "Successfully retrived permission with id",
     data: result,
@@ -58,7 +59,7 @@ const updatePermissionById = catchAsync(async (req: Request, res: Response) => {
     req.body,
   );
   sendResponse<IPermission>(res, {
-    statusCode: 200,
+    statusCode: httpStatus.OK,
     success: true,
     message: "Successfully updated permission with id",
     data: result,
@@ -69,7 +70,7 @@ const deletePermissionById = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
   const result = await PermissionService.deletePermissionByIdService(id);
   sendResponse<IPermission>(res, {
-    statusCode: 200,
+    statusCode: httpStatus.OK,
     success: true,
     message: "Successfully deleted permission with id",
     data: result,

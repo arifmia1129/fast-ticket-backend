@@ -1,15 +1,4 @@
-export const bloodGroupEnum = [
-  "a+",
-  "a-",
-  "b+",
-  "b-",
-  "ab+",
-  "ab-",
-  "o+",
-  "o-",
-];
-
-export const passengerSearchableField = [
+export const adminSearchableField = [
   "id",
   "name.firstName",
   "name.middleName",
@@ -19,7 +8,7 @@ export const passengerSearchableField = [
   "email",
 ];
 
-export const passengerFilterableField = [
+export const adminFilterableField = [
   "id",
   "email",
   "contactNo",

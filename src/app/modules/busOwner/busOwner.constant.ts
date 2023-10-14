@@ -1,5 +1,3 @@
-export const genderEnum = ["male", "female", "other"];
-
 export const busOwnerSearchableField = [
   "id",
   "name.firstName",

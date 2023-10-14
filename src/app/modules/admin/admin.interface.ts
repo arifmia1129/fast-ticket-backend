@@ -1,9 +1,12 @@
-import { HydratedDocument, Model } from "mongoose";
+import { HydratedDocument, Model, Types } from "mongoose";
 import { IName } from "../../../interfaces/common.interface";
+import { IPermission } from "../permission/permission.interface";
 
 export type IAdmin = {
   id: string;
+  permissions: Types.ObjectId[] | IPermission[];
   name: IName;
+  designnation: string;
   gender: "male" | "female" | "other";
   dateOfBirth: string;
   email: string;

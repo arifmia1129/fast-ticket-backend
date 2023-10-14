@@ -6,7 +6,7 @@ import { PermissionValidation } from "./permission.validation";
 const router = Router();
 
 router.post(
-  "/create-management",
+  "/",
   requestValidator(PermissionValidation.createUpdateValidation),
   PermissionController.createPermission,
 );

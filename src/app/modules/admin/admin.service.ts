@@ -6,18 +6,18 @@ import {
   Pagination,
   ResponseWithPagination,
 } from "../../../interfaces/databaseQuery.interface";
-import { IPassenger } from "./passenger.interface";
-import Passenger from "./passenger.model";
-import { passengerSearchableField } from "./passenger.constant";
+import { IAdmin } from "./admin.interface";
+import Admin from "./admin.model";
+import { adminSearchableField } from "./admin.constant";
 import ApiError from "../../../errors/ApiError";
 import httpStatus from "../../../shared/httpStatus";
 import User from "../user/user.model";
 import { IName } from "../../../interfaces/common.interface";
 
-const getPassengerService = async (
+const getAdminService = async (
   filters: Filter,
   paginationOptions: Pagination,
-): Promise<ResponseWithPagination<IPassenger[]>> => {
+): Promise<ResponseWithPagination<IAdmin[]>> => {
   const { page, limit, skip, sortBy, sortOrder } =
     paginationHelper.calculatePagination(paginationOptions);
 
@@ -33,7 +33,7 @@ const getPassengerService = async (
 
   if (searchTerm) {
     andCondition.push({
-      $or: passengerSearchableField.map(field => ({
+      $or: adminSearchableField.map(field => ({
         [field]: {
           $regex: searchTerm,
           $options: "i",
@@ -52,16 +52,16 @@ const getPassengerService = async (
 
   const whereConditions = andCondition.length ? { $and: andCondition } : {};
 
-  const res = await Passenger.find(whereConditions)
+  const res = await Admin.find(whereConditions)
     .sort(sortCondition)
     .skip(skip)
     .limit(limit);
 
   if (!res.length) {
-    throw new ApiError("No passenger found", httpStatus.NOT_FOUND);
+    throw new ApiError("No admin found", httpStatus.NOT_FOUND);
   }
 
-  const total = await Passenger.countDocuments(whereConditions);
+  const total = await Admin.countDocuments(whereConditions);
 
   return {
     meta: {
@@ -73,37 +73,29 @@ const getPassengerService = async (
   };
 };
 
-const getPassengerByIdService = async (
-  id: string,
-): Promise<IPassenger | null> => {
-  const res = await Passenger.findById(id);
+const getAdminByIdService = async (id: string): Promise<IAdmin | null> => {
+  const res = await Admin.findById(id);
 
   if (!res) {
-    throw new ApiError(
-      "No passenger found with given ID",
-      httpStatus.NOT_FOUND,
-    );
+    throw new ApiError("No admin found with given ID", httpStatus.NOT_FOUND);
   }
 
   return res;
 };
 
-const updatePassengerByIdService = async (
+const updateAdminByIdService = async (
   id: string,
-  payload: Partial<IPassenger>,
-): Promise<IPassenger | null> => {
-  const isExist = await Passenger.findById(id);
+  payload: Partial<IAdmin>,
+): Promise<IAdmin | null> => {
+  const isExist = await Admin.findById(id);
 
   if (!isExist) {
-    throw new ApiError(
-      "Passenger not found with given id",
-      httpStatus.NOT_FOUND,
-    );
+    throw new ApiError("Admin not found with given id", httpStatus.NOT_FOUND);
   }
 
-  const { name, ...PassengerInfo } = payload;
+  const { name, ...adminInfo } = payload;
 
-  const updateInfo: Partial<IPassenger> = { ...PassengerInfo };
+  const updateInfo: Partial<IAdmin> = { ...adminInfo };
 
   //   name object
   if (name && Object.keys(name).length > 0) {
@@ -115,29 +107,27 @@ const updatePassengerByIdService = async (
     });
   }
 
-  const res = await Passenger.findOneAndUpdate({ _id: id }, updateInfo, {
+  const res = await Admin.findOneAndUpdate({ _id: id }, updateInfo, {
     new: true,
   });
 
   return res;
 };
 
-const deletePassengerByIdService = async (
-  id: string,
-): Promise<IPassenger | null> => {
+const deleteAdminByIdService = async (id: string): Promise<IAdmin | null> => {
   const session = await mongoose.startSession();
 
   let res;
 
   try {
     session.startTransaction();
-    const passengerInfo = await Passenger.findOneAndDelete({ id });
+    const adminInfo = await Admin.findOneAndDelete({ id });
 
-    if (!passengerInfo) {
-      throw new ApiError("Failed to delete passenger", httpStatus.BAD_REQUEST);
+    if (!adminInfo) {
+      throw new ApiError("Failed to delete admin", httpStatus.BAD_REQUEST);
     }
 
-    res = passengerInfo;
+    res = adminInfo;
 
     const user = await User.deleteOne({ id });
 
@@ -156,9 +146,9 @@ const deletePassengerByIdService = async (
   return res;
 };
 
-export const PassengerService = {
-  getPassengerService,
-  getPassengerByIdService,
-  updatePassengerByIdService,
-  deletePassengerByIdService,
+export const AdminService = {
+  getAdminService,
+  getAdminByIdService,
+  updateAdminByIdService,
+  deleteAdminByIdService,
 };

@@ -4,7 +4,8 @@ import {
   IPassengerMethods,
   PassengerModel,
 } from "./passenger.interface";
-import { bloodGroupEnum, genderEnum } from "./passenger.constant";
+import { bloodGroupEnum } from "./passenger.constant";
+import { genderEnum } from "../../constant/common";
 
 export const PassengerSchema = new Schema<
   IPassenger,
