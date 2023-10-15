@@ -265,8 +265,32 @@ const createAdminService = async (
   return userInfo || null;
 };
 
+const userProfileService = async (payload: {
+  userId: string;
+  role: string;
+}): Promise<IAdmin | IBusOwner | IPassenger | null> => {
+  const { userId, role } = payload;
+
+  let res;
+
+  if (role === "passenger") {
+    res = await Passenger.findOne({ id: userId });
+  } else if (role === "bus_owner") {
+    res = await BusOwner.findOne({ id: userId });
+  } else if (role === "admin") {
+    res = await Admin.findOne({ id: userId });
+  }
+
+  if (!res) {
+    throw new ApiError("User profile not found", httpStatus.NOT_FOUND);
+  }
+
+  return res;
+};
+
 export const UserService = {
   createAdminService,
   createBusOwnerService,
   createPassengerService,
+  userProfileService,
 };

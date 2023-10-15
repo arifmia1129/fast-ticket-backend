@@ -84,7 +84,8 @@ export const PassengerSchema = new Schema<
     },
     profileImage: {
       type: String,
-      default: "",
+      default:
+        "https://img.freepik.com/free-photo/purple-osteospermum-daisy-flower_1373-16.jpg",
     },
   },
   {

@@ -4,6 +4,10 @@ import sendResponse from "../../../shared/sendResponse";
 import { IUser } from "./user.interface";
 import { UserService } from "./user.service";
 import httpStatus from "../../../shared/httpStatus";
+import { JwtPayload } from "jsonwebtoken";
+import { IAdmin } from "../admin/admin.interface";
+import { IPassenger } from "../passenger/passenger.interface";
+import { IBusOwner } from "../busOwner/busOwner.interface";
 
 const createPassenger = catchAsync(async (req: Request, res: Response) => {
   const { passenger, ...userInfo } = req.body;
@@ -44,8 +48,22 @@ const createAdmin = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const userProfile = catchAsync(async (req: Request, res: Response) => {
+  const { userId, role } = req.user as JwtPayload;
+
+  const result = await UserService.userProfileService({ userId, role });
+
+  sendResponse<IAdmin | IPassenger | IBusOwner | null>(res, {
+    statusCode: httpStatus.CREATED,
+    success: true,
+    message: "Successfully retrived user profile information",
+    data: result,
+  });
+});
+
 export const UserController = {
   createPassenger,
   createBusOwner,
   createAdmin,
+  userProfile,
 };

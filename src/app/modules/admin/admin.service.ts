@@ -45,7 +45,12 @@ const getAdminService = async (
   if (Object.keys(filtersData).length) {
     andCondition.push({
       $and: Object.entries(filtersData).map(([field, value]) => ({
-        [field]: value,
+        [field]: {
+          $regex: new RegExp(
+            typeof value === "string" ? value : String(value),
+            "i",
+          ),
+        },
       })),
     });
   }

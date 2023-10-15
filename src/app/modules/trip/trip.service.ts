@@ -52,9 +52,22 @@ const getTripService = async (
     sortCondition[sortBy] = sortOrder;
   }
 
-  const { searchTerm, ...filtersData } = filters;
+  const { searchTerm, date, ...filtersData } = filters;
 
   const andCondition = [];
+
+  if (date) {
+    // Ensure date is treated as an array of strings
+    const dates = (Array.isArray(date) ? date : [date]) as string[];
+
+    const dateConditions = dates
+      .map(dateStr => new Date(dateStr))
+      .filter(date => !isNaN(date.getTime()));
+
+    if (dateConditions.length > 0) {
+      andCondition.push({ date: { $in: dateConditions } });
+    }
+  }
 
   if (searchTerm) {
     andCondition.push({
@@ -70,7 +83,12 @@ const getTripService = async (
   if (Object.keys(filtersData).length) {
     andCondition.push({
       $and: Object.entries(filtersData).map(([field, value]) => ({
-        [field]: value,
+        [field]: {
+          $regex: new RegExp(
+            typeof value === "string" ? value : String(value),
+            "i",
+          ),
+        },
       })),
     });
   }
