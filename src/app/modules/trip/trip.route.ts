@@ -11,7 +11,7 @@ router.post(
   "/",
   requestValidator(TripValidation.createValidation),
   auth(
-    USER_ROLE_ENUM.PASSENGER,
+    USER_ROLE_ENUM.BUS_OWNER,
     USER_ROLE_ENUM.SUPER_ADMIN,
     USER_ROLE_ENUM.ADMIN,
   ),
@@ -24,7 +24,7 @@ router
   .get(TripController.getTripById)
   .all(
     auth(
-      USER_ROLE_ENUM.PASSENGER,
+      USER_ROLE_ENUM.BUS_OWNER,
       USER_ROLE_ENUM.SUPER_ADMIN,
       USER_ROLE_ENUM.ADMIN,
     ),
