@@ -11,6 +11,7 @@ import { busFilterableField } from "./bus.constant";
 import { paginationField } from "../../constant/pagination";
 import { BusService } from "./bus.service";
 import httpStatus from "../../../shared/httpStatus";
+import { JwtPayload } from "jsonwebtoken";
 
 const createBus = catchAsync(async (req: Request, res: Response) => {
   const result = await BusService.createBusService(req.body);
@@ -27,7 +28,13 @@ const getBus = catchAsync(async (req: Request, res: Response) => {
   const filterData: Filter = pick(req.query, busFilterableField);
   const paginationOptions: Pagination = pick(req.query, paginationField);
 
-  const result = await BusService.getBusService(filterData, paginationOptions);
+  const userInfo = req.user as JwtPayload;
+
+  const result = await BusService.getBusService(
+    filterData,
+    paginationOptions,
+    userInfo,
+  );
 
   sendResponse<IBus[]>(res, {
     statusCode: httpStatus.OK,

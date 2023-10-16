@@ -277,6 +277,34 @@ const updateBookedByIdService = async (
 };
 
 const deleteBookedByIdService = async (id: string): Promise<IBooked | null> => {
+  const isExist = await Booked.findById(id);
+
+  if (!isExist) {
+    throw new ApiError(
+      "No booked information found with given ID",
+      httpStatus.NOT_FOUND,
+    );
+  }
+
+  if (isExist.status === "cancelled") {
+    throw new ApiError("Booked has been cancelled", httpStatus.BAD_REQUEST);
+  }
+  if (isExist.status === "accepted") {
+    throw new ApiError("Booked has been accepted", httpStatus.BAD_REQUEST);
+  }
+
+  await Trip.findOneAndUpdate(
+    { _id: isExist.trip, "seats._id": isExist.seat },
+    {
+      $set: {
+        "seats.$.status": "available",
+      },
+    },
+    {
+      new: true,
+    },
+  );
+
   const res = await Booked.findByIdAndDelete(id);
 
   if (!res) {

@@ -11,6 +11,7 @@ import ApiError from "../../../errors/ApiError";
 import Bus from "./bus.model";
 import { busSearchableField } from "./bus.constant";
 import BusOwner from "../busOwner/busOwner.model";
+import { JwtPayload } from "jsonwebtoken";
 
 const createBusService = async (payload: IBus): Promise<IBus | null> => {
   const isBusOwnerExist = await BusOwner.findById(payload.owner);
@@ -28,6 +29,7 @@ const createBusService = async (payload: IBus): Promise<IBus | null> => {
 const getBusService = async (
   filters: Filter,
   paginationOptions: Pagination,
+  payload: JwtPayload,
 ): Promise<ResponseWithPagination<IBus[]>> => {
   const { page, limit, skip, sortBy, sortOrder } =
     paginationHelper.calculatePagination(paginationOptions);
@@ -40,7 +42,21 @@ const getBusService = async (
 
   const { searchTerm, ...filtersData } = filters;
 
+  const { userId, role } = payload;
+
   const andCondition = [];
+
+  if (role === "bus_owner") {
+    const ownerInfo = await BusOwner.findOne({
+      id: userId,
+    });
+
+    if (ownerInfo) {
+      andCondition.push({
+        owner: ownerInfo._id,
+      });
+    }
+  }
 
   if (searchTerm) {
     andCondition.push({

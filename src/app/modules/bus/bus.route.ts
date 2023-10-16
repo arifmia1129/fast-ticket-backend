@@ -17,7 +17,15 @@ router.post(
   ),
   BusController.createBus,
 );
-router.get("/", BusController.getBus);
+router.get(
+  "/",
+  auth(
+    USER_ROLE_ENUM.BUS_OWNER,
+    USER_ROLE_ENUM.SUPER_ADMIN,
+    USER_ROLE_ENUM.ADMIN,
+  ),
+  BusController.getBus,
+);
 
 router
   .route("/:id")
