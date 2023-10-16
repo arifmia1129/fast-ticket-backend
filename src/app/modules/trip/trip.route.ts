@@ -18,6 +18,8 @@ router.post(
   TripController.createTrip,
 );
 router.get("/", TripController.getTrip);
+router.get("/source", TripController.getTripSource);
+router.get("/destination", TripController.getTripDestination);
 
 router
   .route("/:id")

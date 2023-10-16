@@ -4,7 +4,7 @@ import { IPassenger } from "../passenger/passenger.interface";
 import { ITrip } from "../trip/trip.interface";
 
 export type IBooked = {
-  seat: Types.ObjectId | string;
+  seat: string;
   passenger: Types.ObjectId | IPassenger;
   trip: Types.ObjectId | ITrip;
   status: "pending" | "accepted" | "cancelled";

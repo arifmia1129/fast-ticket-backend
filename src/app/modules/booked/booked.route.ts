@@ -2,6 +2,8 @@ import { Router } from "express";
 import requestValidator from "../../middleware/requestValidator";
 import { BookedController } from "./booked.controller";
 import { BookedValidation } from "./booked.validation";
+import auth from "../../middleware/auth";
+import { USER_ROLE_ENUM } from "../../../enums/user.enum";
 
 const router = Router();
 
@@ -11,6 +13,11 @@ router.post(
   BookedController.createBooked,
 );
 router.get("/", BookedController.getBooked);
+router.get(
+  "/my-booked",
+  auth(USER_ROLE_ENUM.PASSENGER),
+  BookedController.getMyBooked,
+);
 
 router
   .route("/:id")

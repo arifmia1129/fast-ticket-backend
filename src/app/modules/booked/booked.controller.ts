@@ -11,6 +11,7 @@ import { bookedFilterableField } from "./booked.constant";
 import { paginationField } from "../../constant/pagination";
 import { BookedService } from "./booked.service";
 import httpStatus from "../../../shared/httpStatus";
+import { JwtPayload } from "jsonwebtoken";
 
 const createBooked = catchAsync(async (req: Request, res: Response) => {
   const result = await BookedService.createBookedService(req.body);
@@ -38,6 +39,27 @@ const getBooked = catchAsync(async (req: Request, res: Response) => {
     message: "Successfully retrived all booked information",
     meta: result.meta,
     data: result.data,
+  });
+});
+
+const getMyBooked = catchAsync(async (req: Request, res: Response) => {
+  const { userId } = req.user as JwtPayload;
+
+  const filterData: Filter = pick(req.query, bookedFilterableField);
+  const paginationOptions: Pagination = pick(req.query, paginationField);
+
+  const result = await BookedService.getMyBookedService(
+    filterData,
+    paginationOptions,
+    userId,
+  );
+
+  sendResponse<IBooked[]>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Successfully retrived my booked information",
+    meta: result?.meta,
+    data: result?.data,
   });
 });
 
@@ -80,4 +102,5 @@ export const BookedController = {
   getBookedById,
   updateBookedById,
   deleteBookedById,
+  getMyBooked,
 };

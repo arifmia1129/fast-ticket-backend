@@ -4,8 +4,7 @@ import { IBooked, IBookedMethods, BookedModel } from "./booked.interface";
 export const BookedSchema = new Schema<IBooked, BookedModel, IBookedMethods>(
   {
     seat: {
-      type: Schema.Types.ObjectId,
-      ref: "Seat",
+      type: String,
       required: true,
     },
     passenger: {

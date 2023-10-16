@@ -20,6 +20,16 @@ export const TripSchema = new Schema<ITrip, TripModel, ITripMethods>(
       type: String,
       required: true,
     },
+    price: {
+      type: Number,
+      required: true,
+      default: 500,
+    },
+    time: {
+      type: String,
+      required: true,
+      default: "10.00 am",
+    },
     date: {
       type: Date,
       required: true,

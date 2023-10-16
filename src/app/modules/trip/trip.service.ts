@@ -96,6 +96,7 @@ const getTripService = async (
   const whereConditions = andCondition.length ? { $and: andCondition } : {};
 
   const res = await Trip.find(whereConditions)
+    .populate("bus")
     .sort(sortCondition)
     .skip(skip)
     .limit(limit);
@@ -147,10 +148,50 @@ const deleteTripByIdService = async (id: string): Promise<ITrip | null> => {
   return res;
 };
 
+const getTripSourceService = async (): Promise<string[] | null> => {
+  const res = await Trip.find({}, { source: 1 });
+
+  if (!res) {
+    throw new ApiError("Source not found", httpStatus.NOT_FOUND);
+  }
+
+  // Extract unique sources using a Set
+  const uniqueSourcesSet = new Set<string>();
+  res.forEach(trip => {
+    uniqueSourcesSet.add(trip.source);
+  });
+
+  // Convert the Set back to an array
+  const uniqueSources: string[] = Array.from(uniqueSourcesSet);
+
+  return uniqueSources;
+};
+
+const getTripDestinationService = async (): Promise<string[] | null> => {
+  const res = await Trip.find({}, { destination: 1 });
+
+  if (!res) {
+    throw new ApiError("Source not found", httpStatus.NOT_FOUND);
+  }
+
+  // Extract unique sources using a Set
+  const uniqueSourcesSet = new Set<string>();
+  res.forEach(trip => {
+    uniqueSourcesSet.add(trip.destination);
+  });
+
+  // Convert the Set back to an array
+  const uniqueSources: string[] = Array.from(uniqueSourcesSet);
+
+  return uniqueSources;
+};
+
 export const TripService = {
   createTripService,
   getTripService,
   getTripByIdService,
   updateTripByIdService,
   deleteTripByIdService,
+  getTripSourceService,
+  getTripDestinationService,
 };

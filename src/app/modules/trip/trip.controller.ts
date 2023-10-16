@@ -74,10 +74,32 @@ const deleteTripById = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getTripSource = catchAsync(async (req: Request, res: Response) => {
+  const result = await TripService.getTripSourceService();
+  sendResponse<string[]>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Successfully retrieved trip source",
+    data: result,
+  });
+});
+
+const getTripDestination = catchAsync(async (req: Request, res: Response) => {
+  const result = await TripService.getTripDestinationService();
+  sendResponse<string[]>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Successfully retrieved trip destination",
+    data: result,
+  });
+});
+
 export const TripController = {
   createTrip,
   getTrip,
   getTripById,
   updateTripById,
   deleteTripById,
+  getTripSource,
+  getTripDestination,
 };

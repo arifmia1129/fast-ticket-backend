@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { SortOrder } from "mongoose";
+import mongoose, { SortOrder } from "mongoose";
 import { paginationHelper } from "../../../helpers/paginationHelper";
 import {
   Pagination,
@@ -127,6 +127,105 @@ const getBookedService = async (
   };
 };
 
+const getMyBookedService = async (
+  filters: Filter,
+  paginationOptions: Pagination,
+  userId: string,
+): Promise<ResponseWithPagination<IBooked[]>> => {
+  const { page, limit, skip, sortBy, sortOrder } =
+    paginationHelper.calculatePagination(paginationOptions);
+
+  const sortCondition: { [key: string]: SortOrder } = {};
+
+  if (sortBy && sortOrder) {
+    sortCondition[sortBy] = sortOrder;
+  }
+
+  const { searchTerm, ...filtersData } = filters;
+
+  const andCondition = [];
+
+  const passenger = await Passenger.findOne({ id: userId });
+
+  if (passenger) {
+    andCondition.push({
+      passenger: passenger._id,
+    });
+  }
+
+  if (searchTerm) {
+    andCondition.push({
+      $or: bookedSearchableField.map(field => ({
+        [field]: {
+          $regex: searchTerm,
+          $options: "i",
+        },
+      })),
+    });
+  }
+
+  if (Object.keys(filtersData).length) {
+    andCondition.push({
+      $and: Object.entries(filtersData).map(([field, value]) => ({
+        [field]: {
+          $regex: new RegExp(
+            typeof value === "string" ? value : String(value),
+            "i",
+          ),
+        },
+      })),
+    });
+  }
+
+  const whereConditions = andCondition.length ? { $and: andCondition } : {};
+
+  const res = await Booked.find(whereConditions)
+    .populate("passenger")
+    .populate({
+      path: "trip",
+      select: { seats: 0 },
+      populate: {
+        path: "bus",
+      },
+    })
+    .sort(sortCondition)
+    .skip(skip)
+    .limit(limit);
+
+  async function findSeats() {
+    for (const data of res) {
+      const seatObjectId = new mongoose.Types.ObjectId(data.seat);
+
+      const trip = await Trip.findOne({ "seats._id": seatObjectId });
+
+      if (trip) {
+        const mySeat = trip.seats.find((seat: any) =>
+          seat._id.equals(seatObjectId),
+        );
+        if (mySeat) {
+          data.seat = mySeat.seat; // Add the seat data to the Booked document
+        }
+      }
+    }
+  }
+
+  await findSeats();
+  if (!res.length) {
+    throw new ApiError("No Booked found", httpStatus.NOT_FOUND);
+  }
+
+  const total = await Booked.countDocuments(whereConditions);
+
+  return {
+    meta: {
+      page,
+      limit,
+      total,
+    },
+    data: res,
+  };
+};
+
 const getBookedByIdService = async (id: string): Promise<IBooked | null> => {
   const res = await Booked.findById(id);
 
@@ -196,4 +295,5 @@ export const BookedService = {
   getBookedByIdService,
   updateBookedByIdService,
   deleteBookedByIdService,
+  getMyBookedService,
 };

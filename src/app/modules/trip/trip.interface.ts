@@ -13,6 +13,8 @@ export type ITrip = {
   source: string;
   destination: string;
   date: Date;
+  price: number;
+  time: string;
   seats: ISeat[];
 };
 

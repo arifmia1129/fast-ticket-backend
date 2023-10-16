@@ -1,4 +1,4 @@
-export const tripSearchableField = ["busNo", "source", "destination", "date"];
+export const tripSearchableField = ["busNo", "source", "destination"];
 
 export const tripFilterableField = [
   "searchTerm",
