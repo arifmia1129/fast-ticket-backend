@@ -29,7 +29,6 @@ const updateValidation = z.object({
     source: z.string().optional(),
     destination: z.string().optional(),
     date: z.string().optional(),
-    totalSeat: z.number().optional(),
   }),
 });
 

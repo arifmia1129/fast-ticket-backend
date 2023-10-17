@@ -107,6 +107,14 @@ const getBookedService = async (
   const whereConditions = andCondition.length ? { $and: andCondition } : {};
 
   const res = await Booked.find(whereConditions)
+    .populate("passenger")
+    .populate({
+      path: "trip",
+      select: { seats: 0 },
+      populate: {
+        path: "bus",
+      },
+    })
     .sort(sortCondition)
     .skip(skip)
     .limit(limit);
@@ -114,7 +122,27 @@ const getBookedService = async (
   if (!res.length) {
     throw new ApiError("No Booked found", httpStatus.NOT_FOUND);
   }
+  async function findSeats() {
+    for (const data of res) {
+      const seatObjectId = new mongoose.Types.ObjectId(data.seat);
 
+      const trip = await Trip.findOne({ "seats._id": seatObjectId });
+
+      if (trip) {
+        const mySeat = trip.seats.find((seat: any) =>
+          seat._id.equals(seatObjectId),
+        );
+        if (mySeat) {
+          data.seat = mySeat.seat; // Add the seat data to the Booked document
+        }
+      }
+    }
+  }
+
+  await findSeats();
+  if (!res.length) {
+    throw new ApiError("No Booked found", httpStatus.NOT_FOUND);
+  }
   const total = await Booked.countDocuments(whereConditions);
 
   return {

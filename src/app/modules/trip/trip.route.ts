@@ -17,7 +17,15 @@ router.post(
   ),
   TripController.createTrip,
 );
-router.get("/", TripController.getTrip);
+router.get(
+  "/",
+  auth(
+    USER_ROLE_ENUM.BUS_OWNER,
+    USER_ROLE_ENUM.SUPER_ADMIN,
+    USER_ROLE_ENUM.ADMIN,
+  ),
+  TripController.getTrip,
+);
 router.get("/source", TripController.getTripSource);
 router.get("/destination", TripController.getTripDestination);
 
