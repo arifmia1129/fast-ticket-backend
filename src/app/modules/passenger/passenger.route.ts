@@ -14,7 +14,13 @@ router.get(
 );
 router
   .route("/:id")
-  .all(auth(USER_ROLE_ENUM.SUPER_ADMIN, USER_ROLE_ENUM.ADMIN))
+  .all(
+    auth(
+      USER_ROLE_ENUM.SUPER_ADMIN,
+      USER_ROLE_ENUM.ADMIN,
+      USER_ROLE_ENUM.PASSENGER,
+    ),
+  )
   .get(PassengerController.getPassengerById)
   .patch(
     requestValidator(PassengerValidation.updateValidation),

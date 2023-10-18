@@ -16,6 +16,7 @@ function addAuthData(req: Request, res: Response, next: NextFunction) {
       USER_ROLE_ENUM.BUS_OWNER,
       USER_ROLE_ENUM.SUPER_ADMIN,
       USER_ROLE_ENUM.ADMIN,
+      USER_ROLE_ENUM.PASSENGER,
     )(req, res, next);
   } else {
     // If there's no authorization header, continue to the next middleware

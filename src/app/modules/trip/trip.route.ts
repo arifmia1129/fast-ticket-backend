@@ -23,6 +23,7 @@ router.get(
     USER_ROLE_ENUM.BUS_OWNER,
     USER_ROLE_ENUM.SUPER_ADMIN,
     USER_ROLE_ENUM.ADMIN,
+    USER_ROLE_ENUM.PASSENGER,
   ),
   TripController.getTrip,
 );
