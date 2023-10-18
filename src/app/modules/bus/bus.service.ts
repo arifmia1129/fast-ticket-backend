@@ -12,6 +12,7 @@ import Bus from "./bus.model";
 import { busSearchableField } from "./bus.constant";
 import BusOwner from "../busOwner/busOwner.model";
 import { JwtPayload } from "jsonwebtoken";
+import Passenger from "../passenger/passenger.model";
 
 const createBusService = async (payload: IBus): Promise<IBus | null> => {
   const isBusOwnerExist = await BusOwner.findById(payload.owner);
@@ -42,7 +43,7 @@ const getBusService = async (
 
   const { searchTerm, ...filtersData } = filters;
 
-  const { userId, role } = payload;
+  const { userId, role } = payload || {};
 
   const andCondition = [];
 
@@ -126,6 +127,42 @@ const updateBusByIdService = async (
   return res;
 };
 
+const addBusReviewByIdService = async (
+  busId: string,
+  userId: string,
+  payload: {
+    review: string;
+    rating: string;
+  },
+): Promise<IBus | null> => {
+  const isExist = await Bus.findById(busId);
+
+  if (!isExist) {
+    throw new ApiError(`Could not find the bus with id`, httpStatus.NOT_FOUND);
+  }
+
+  const passenger = await Passenger.findOne({ id: userId });
+
+  if (!passenger) {
+    throw new ApiError(
+      `Could not find the passenger with id`,
+      httpStatus.NOT_FOUND,
+    );
+  }
+
+  const review = {
+    name: passenger.name.firstName + " " + passenger.name.lastName,
+    review: payload.review,
+    rating: payload.rating,
+  };
+
+  isExist?.review?.push(review);
+
+  await isExist.save();
+
+  return isExist;
+};
+
 const deleteBusByIdService = async (id: string): Promise<IBus | null> => {
   const res = await Bus.findByIdAndDelete(id);
 
@@ -142,4 +179,5 @@ export const BusService = {
   getBusByIdService,
   updateBusByIdService,
   deleteBusByIdService,
+  addBusReviewByIdService,
 };

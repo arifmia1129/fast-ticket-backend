@@ -67,6 +67,18 @@ const updateBusById = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const addBusReviewById = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { userId } = req.user as JwtPayload;
+  const result = await BusService.addBusReviewByIdService(id, userId, req.body);
+  sendResponse<IBus>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Successfully add bus review",
+    data: result,
+  });
+});
+
 const deleteBusById = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
   const result = await BusService.deleteBusByIdService(id);
@@ -84,4 +96,5 @@ export const BusController = {
   getBusById,
   updateBusById,
   deleteBusById,
+  addBusReviewById,
 };

@@ -13,6 +13,7 @@ export const BusSchema = new Schema<IBus, BusModel, IBusMethods>(
       ref: "BusOwner",
       required: true,
     },
+    review: [{ name: String, review: String, rating: String }],
   },
   {
     timestamps: true,

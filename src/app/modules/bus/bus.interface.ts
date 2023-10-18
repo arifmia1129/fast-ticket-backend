@@ -5,6 +5,11 @@ import { IBusOwner } from "../busOwner/busOwner.interface";
 export type IBus = {
   name: string;
   owner: Types.ObjectId | IBusOwner;
+  review: {
+    name: string;
+    review: string;
+    rating: string;
+  }[];
 };
 
 export type IBusMethods = {

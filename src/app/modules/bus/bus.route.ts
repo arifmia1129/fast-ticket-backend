@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { NextFunction, Request, Response, Router } from "express";
 import requestValidator from "../../middleware/requestValidator";
 import { BusController } from "./bus.controller";
 import { BusValidation } from "./bus.validation";
@@ -6,6 +6,22 @@ import auth from "../../middleware/auth";
 import { USER_ROLE_ENUM } from "../../../enums/user.enum";
 
 const router = Router();
+
+// Middleware to add authentication data
+function addAuthData(req: Request, res: Response, next: NextFunction) {
+  // Check if there is an authorization header
+  if (req.headers.authorization) {
+    // If there's an authorization header, apply the auth middleware
+    auth(
+      USER_ROLE_ENUM.BUS_OWNER,
+      USER_ROLE_ENUM.SUPER_ADMIN,
+      USER_ROLE_ENUM.ADMIN,
+    )(req, res, next);
+  } else {
+    // If there's no authorization header, continue to the next middleware
+    next();
+  }
+}
 
 router.post(
   "/",
@@ -17,15 +33,13 @@ router.post(
   ),
   BusController.createBus,
 );
-router.get(
-  "/",
-  auth(
-    USER_ROLE_ENUM.BUS_OWNER,
-    USER_ROLE_ENUM.SUPER_ADMIN,
-    USER_ROLE_ENUM.ADMIN,
-  ),
-  BusController.getBus,
+
+router.post(
+  "/review/:id",
+  auth(USER_ROLE_ENUM.PASSENGER),
+  BusController.addBusReviewById,
 );
+router.get("/", addAuthData, BusController.getBus);
 
 router
   .route("/:id")

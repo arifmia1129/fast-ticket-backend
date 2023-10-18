@@ -9,6 +9,7 @@ import { BusRouter } from "../modules/bus/bus.route";
 import { TripRouter } from "../modules/trip/trip.route";
 import { BookedRouter } from "../modules/booked/booked.route";
 import { ContactRouter } from "../modules/contact/contact.route";
+import { NewsRouter } from "../modules/news/news.route";
 
 const router = Router();
 
@@ -23,6 +24,7 @@ const moduleRoutes = [
   { path: "/trip", route: TripRouter },
   { path: "/booked", route: BookedRouter },
   { path: "/contact", route: ContactRouter },
+  { path: "/news", route: NewsRouter },
 ];
 
 moduleRoutes.forEach(route => router.use(route.path, route.route));
