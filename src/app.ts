@@ -15,7 +15,7 @@ app.use(cookieParser());
 // cors
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: ["https://fast-bus-ticket.vercel.app", "http://localhost:3000"],
     credentials: true,
   }),
 );
@@ -26,7 +26,7 @@ app.use("/api/v1", router);
 app.get("/", async (req: Request, res: Response) => {
   res.status(200).json({
     success: true,
-    message: "Server is running successfully",
+    message: "Fast Ticket server is running successfully",
   });
 });
 
