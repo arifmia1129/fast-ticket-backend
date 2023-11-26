@@ -13,6 +13,9 @@ import Booked from "./booked.model";
 import { bookedSearchableField } from "./booked.constant";
 import Passenger from "../passenger/passenger.model";
 import Trip from "../trip/trip.model";
+import { IPassenger } from "../passenger/passenger.interface";
+import { IBus } from "../bus/bus.interface";
+import sendEmail from "../../../utils/sendEmail";
 
 const createBookedService = async (
   payload: IBooked,
@@ -268,13 +271,28 @@ const updateBookedByIdService = async (
   id: string,
   payload: Partial<IBooked>,
 ): Promise<IBooked | null> => {
-  const isExist = await Booked.findById(id);
+  const isExist = await Booked.findById(id).populate("passenger");
 
   if (!isExist) {
     throw new ApiError(
       "No booked information found with given ID",
       httpStatus.NOT_FOUND,
     );
+  }
+
+  const seatObjectId = new mongoose.Types.ObjectId(isExist.seat);
+
+  const trip = await Trip.findOne({ "seats._id": seatObjectId }).populate(
+    "bus",
+  );
+
+  if (trip) {
+    const mySeat = trip.seats.find((seat: any) =>
+      seat._id.equals(seatObjectId),
+    );
+    if (mySeat) {
+      isExist.seat = mySeat.seat; // Add the seat data to the Booked document
+    }
   }
 
   if (isExist.status === "cancelled") {
@@ -295,6 +313,26 @@ const updateBookedByIdService = async (
         new: true,
       },
     );
+  }
+
+  if (status === "accepted") {
+    const passenger = isExist.passenger as IPassenger;
+    const bus = trip?.bus as IBus;
+
+    const ticketInfo = {
+      name: passenger?.name?.firstName + " " + passenger?.name?.lastName,
+      email: passenger?.email,
+      contactNo: passenger?.contactNo,
+      busName: bus?.name,
+      busNo: trip?.busNo,
+      seat: isExist.seat,
+      source: trip?.source,
+      destination: trip?.destination,
+      time: trip?.time,
+      date: trip?.date.toString()?.split("T")[0],
+    };
+
+    await sendEmail(ticketInfo);
   }
 
   const res = await Booked.findOneAndUpdate({ _id: id }, payload, {
