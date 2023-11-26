@@ -45,6 +45,10 @@ As a super admin, you have access to all admin features, plus:
 
 1. **Manage Admins:** Create admin accounts, edit their information, and delete admin accounts.
 
+### Email Confirmation Feature
+
+Now, the Bus Ticket Booking Website includes an Email Confirmation feature. After an admin reviews and accepts a booked seat, passengers receive a confirmation email with a bus ticket HTML template.
+
 ## Authorization and Access Control
 
 The website implements an authorization system that restricts access to certain features based on user roles. Each role has access only to the features and actions relevant to their responsibilities.
@@ -71,7 +75,3 @@ Watch a detailed video description of this platform on [Google Drive](https://dr
 - Server-side source code is also available on GitHub: [Fast Ticket Backend](https://github.com/arifmia1129/fast-ticket-backend).
 
 Explore the website and enjoy a hassle-free bus ticket booking experience!
-
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
